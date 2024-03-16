@@ -30,8 +30,7 @@ public class CaptchaController {
         return new ResponseEntity<>(captcha.getImage(), headers, HttpStatus.OK);
     }
     @PostMapping("/validate")
-    public ResponseEntity<Boolean> validateCaptcha(HttpSession session, @RequestParam String code) {
-        System.out.println(code);
+    public ResponseEntity<Boolean> validateCaptcha(HttpSession session, @RequestBody String code) {
         boolean isValid = captchaService.validateCaptcha(session, code);
         return ResponseEntity.ok(isValid);
     }

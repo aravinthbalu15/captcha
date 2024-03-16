@@ -22,7 +22,7 @@ public class CaptchaService {
     public Captcha getNewCaptcha(HttpSession session) {
         String sessionId = session.getId();
         CaptchaSession captchaSession = captchaSessions.get(sessionId);
-        if (captchaSession != null && captchaSession.getChangeCaptchaCount() >= 3) {
+        if (captchaSession != null && captchaSession.getChangeCaptchaCount() >= 4) {
             if(captchaSession.getExpirationTime().isBefore(Instant.now())) {
                 captchaSessions.remove(sessionId);
                 captchaSession = captchaSessions.get(sessionId);
