@@ -1,4 +1,4 @@
-package com.duzce.captcha.controllers;
+package com.duzce.captcha.controller;
 
 
 import com.duzce.captcha.model.Captcha;
@@ -9,9 +9,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 @RequestMapping("/captcha")
 public class CaptchaController {
 
@@ -34,5 +35,8 @@ public class CaptchaController {
         boolean isValid = captchaService.validateCaptcha(session, code);
         return ResponseEntity.ok(isValid);
     }
-
+    @GetMapping()
+    public String showCaptchaPage() {
+        return "captcha";
+    }
 }
