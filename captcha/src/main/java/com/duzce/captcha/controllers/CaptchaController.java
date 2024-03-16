@@ -3,8 +3,6 @@ package com.duzce.captcha.controllers;
 
 import com.duzce.captcha.model.Captcha;
 import com.duzce.captcha.service.CaptchaService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
