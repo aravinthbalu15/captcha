@@ -34,7 +34,7 @@ cursor.execute("""
     CREATE TABLE IF NOT EXISTS captchas (
         id SERIAL PRIMARY KEY,
         code CHAR(6),
-        captcha_image BYTEA,
+        image BYTEA,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
 """)
@@ -58,7 +58,7 @@ def generate_captcha():
 
 for _ in range(1000):
     code, captcha_image = generate_captcha()
-    cursor.execute("INSERT INTO captchas (code, captcha_image, created_at) VALUES (%s, %s, %s)",
+    cursor.execute("INSERT INTO captchas (code, image, created_at) VALUES (%s, %s, %s)",
                    (code, psycopg2.Binary(captcha_image), datetime.now(),))
     
 conn.commit()
