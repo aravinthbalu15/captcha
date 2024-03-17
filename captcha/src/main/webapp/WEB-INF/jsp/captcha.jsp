@@ -32,6 +32,8 @@
             display: block;
             margin: 0 auto;
             margin-bottom: 10px;
+            max-height: 140px;
+            max-width: 330px;
         }
 
         form {
@@ -76,8 +78,8 @@
         }
 
         button:disabled {
-            background-color: #cccccc; /* Change color for disabled state */
-            cursor: not-allowed; /* Change cursor for disabled state */
+            background-color: #cccccc;
+            cursor: not-allowed;
         }
     </style>
 </head>

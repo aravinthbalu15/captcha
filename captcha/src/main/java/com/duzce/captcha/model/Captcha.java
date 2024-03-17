@@ -2,7 +2,6 @@ package com.duzce.captcha.model;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
 
 import java.sql.Timestamp;
 import java.sql.Types;

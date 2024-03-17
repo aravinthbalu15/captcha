@@ -3,6 +3,7 @@ package com.duzce.captcha.service;
 import com.duzce.captcha.model.Captcha;
 import com.duzce.captcha.repository.CaptchaRepository;
 import jakarta.servlet.http.HttpSession;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.Map;
 @Service
 public class CaptchaService {
 
+    private static final Logger logger = Logger.getLogger(CaptchaService.class);
     private Map<String, CaptchaSession> captchaSessions = new HashMap<>();
 
     @Autowired
@@ -22,6 +24,9 @@ public class CaptchaService {
     public Captcha getNewCaptcha(HttpSession session) {
         String sessionId = session.getId();
         CaptchaSession captchaSession = captchaSessions.get(sessionId);
+
+        logger.info("Yeni captcha isteği alındı. SessionId: " + sessionId);
+
         if (captchaSession != null && captchaSession.getChangeCaptchaCount() >= 4) {
             if(captchaSession.getExpirationTime().isBefore(Instant.now())) {
                 captchaSessions.remove(sessionId);
@@ -30,7 +35,6 @@ public class CaptchaService {
                 return null;
             }
         }
-
         Captcha captcha = captchaRepository.findRandomCaptcha();
         if (captchaSession == null) {
             captchaSession = new CaptchaSession(sessionId, captcha.getCode(), Instant.now().plusSeconds(30), 1);
@@ -46,6 +50,9 @@ public class CaptchaService {
     public boolean validateCaptcha(HttpSession session, String code) {
         String sessionId = session.getId();
         CaptchaSession captchaSession = captchaSessions.get(sessionId);
+
+        logger.info("Captcha doğrulama isteği alındı. SessionId: " + sessionId + ", Kod: " + code);
+
         if (captchaSession == null || !captchaSession.getCaptchaCode().equals(code) || captchaSession.getExpirationTime().isBefore(Instant.now())) {
             return false;
         }
