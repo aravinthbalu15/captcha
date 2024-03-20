@@ -31,10 +31,15 @@ public class CaptchaController {
     }
     @PostMapping("/validate")
     public ResponseEntity<Boolean> validateCaptcha(HttpSession session, @RequestBody String code) {
-        if (code.length() != 6) {ResponseEntity.badRequest().build();}
+        if (code.length() != 6 && code.chars().noneMatch(Character::isLowerCase)) {
+            return ResponseEntity.badRequest().build();
+        }
 
         boolean isValid = captchaService.validateCaptcha(session, code);
-        return ResponseEntity.ok(isValid);
+        if (isValid) {
+            return ResponseEntity.ok(isValid);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(isValid);
     }
     @GetMapping()
     public String showCaptchaPage() {
