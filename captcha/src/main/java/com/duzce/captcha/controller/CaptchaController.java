@@ -31,6 +31,9 @@ public class CaptchaController {
     }
     @PostMapping("/validate")
     public ResponseEntity<Boolean> validateCaptcha(HttpSession session, @RequestBody String code) {
+        if (code.length() == 6) {
+            return ResponseEntity.badRequest().build();
+        }
         boolean isValid = captchaService.validateCaptcha(session, code);
         return ResponseEntity.ok(isValid);
     }
