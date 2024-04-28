@@ -5,7 +5,9 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
-        <datasource-mapping />
+        <datasource-mapping>
+          <factory-entry name="captcha" value="a39fa9f4-5e4b-46ed-ab75-a33bc2b8044e" />
+        </datasource-mapping>
         <naming-strategy-map />
       </configuration>
     </facet>

@@ -96,7 +96,6 @@
     </form>
     <div id="result"></div>
 </div>
-</body>
 
 <script>
     const form = document.querySelector('form');
@@ -118,7 +117,7 @@
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        fetch('${pageContext.request.contextPath}/captcha/validate', {
+        fetch('${pageContext.request.contextPath}/captcha_war/captcha/validate', {
                 method: 'POST',
                 body: captchaCodeInput.value
         })
@@ -157,6 +156,12 @@
                         refreshButton.disabled = false
                         submitButton.disabled = false
                         resultDiv.textContent = ''
+                    } else if (countdown < 5) {
+                        timer.style.color = 'red'
+                    } else if (countdown < 10) {
+                        timer.style.color = 'orange'
+                    } else {
+                        timer.style.color = 'green'
                     }
                 }, 1000);
                 return response.blob();

@@ -1,6 +1,5 @@
 package com.duzce.captcha.controller;
 
-
 import com.duzce.captcha.model.Captcha;
 import com.duzce.captcha.service.CaptchaService;
 import jakarta.servlet.http.HttpSession;
@@ -19,7 +18,7 @@ public class CaptchaController {
     @Autowired
     private CaptchaService captchaService;
 
-    @GetMapping("/image")
+    @GetMapping(value = "/image", produces = "image/jpeg")
     public ResponseEntity<byte[]> getCaptchaImage(HttpSession session) {
         Captcha captcha = captchaService.getNewCaptcha(session);
         if (captcha == null) {

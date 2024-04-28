@@ -7,7 +7,6 @@ from datetime import datetime
 import psycopg2
 from captcha.image import ImageCaptcha
 
-# PostgreSQL bağlantı bilgileri
 db_params = {
     'host': 'postgres',
     'dbname': 'postgres',
@@ -15,8 +14,6 @@ db_params = {
     'password': 'mypassword',
     'port': '5432'
 }
-
-# PostgreSQL bağlantısını oluştur
 
 while True:
     try: 
@@ -29,7 +26,6 @@ while True:
         
 cursor = conn.cursor()
 
-# Tabloyu oluştur (Eğer daha önce oluşturulmadıysa)
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS captchas (
         id SERIAL PRIMARY KEY,
@@ -41,8 +37,6 @@ cursor.execute("""
 
 conn.commit()
 
-
-# Captcha oluştur
 def generate_captcha():
     random_string = ''.join(random.choices(string.ascii_uppercase, k=6))
     captcha: ImageCaptcha = ImageCaptcha(width=400,
@@ -53,15 +47,12 @@ def generate_captcha():
     image_bytes = image_data.getvalue()
     return random_string, image_bytes
 
-
-# Captcha'yı oluştur ve PostgreSQL veritabanına kaydet
-
 for _ in range(1000):
     code, captcha_image = generate_captcha()
     cursor.execute("INSERT INTO captchas (code, image, created_at) VALUES (%s, %s, %s)",
                    (code, psycopg2.Binary(captcha_image), datetime.now(),))
     
 conn.commit()
-# Bağlantıyı kapat
+
 cursor.close()
 conn.close()

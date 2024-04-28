@@ -1,10 +1,14 @@
 package com.duzce.captcha.model;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcTypeCode;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.*;
+import org.hibernate.type.descriptor.jdbc.TimestampJdbcType;
 
-import java.sql.Timestamp;
+import java.security.Timestamp;
 import java.sql.Types;
+
+import static org.postgresql.core.Oid.TIMESTAMP;
 
 @Entity
 @Table(name = "captchas")
@@ -12,23 +16,29 @@ public class Captcha {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "code", nullable = false, length = 6)
+    @Column(name = "code", length = 6, nullable = false)
     private String code;
 
     @JdbcTypeCode(Types.BINARY)
     @Column(name = "image", nullable = false)
-    private byte[] Image;
+    private byte[] image;
 
-    @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt;
 
+    // Default constructor
     public Captcha() {
     }
 
+    // Getters and setters
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getCode() {
@@ -40,18 +50,11 @@ public class Captcha {
     }
 
     public byte[] getImage() {
-        return Image;
+        return image;
     }
 
-    public void setImage(byte[] captchaImage) {
-        this.Image = Image;
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
 }

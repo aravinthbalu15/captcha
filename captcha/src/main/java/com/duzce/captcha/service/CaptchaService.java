@@ -1,33 +1,42 @@
 package com.duzce.captcha.service;
 
+import com.duzce.captcha.dao.CaptchaRepository;
 import com.duzce.captcha.model.Captcha;
-import com.duzce.captcha.repository.CaptchaRepository;
 import jakarta.servlet.http.HttpSession;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Time;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED, readOnly = true,
+        rollbackFor = Exception.class)
 public class CaptchaService {
 
-    private static final Logger logger = Logger.getLogger(CaptchaService.class);
     private Map<String, CaptchaSession> captchaSessions = new HashMap<>();
 
     @Autowired
     private CaptchaRepository captchaRepository;
 
+    @Transactional(readOnly = true)
     public Captcha getNewCaptcha(HttpSession session) {
         String sessionId = session.getId();
         CaptchaSession captchaSession = captchaSessions.get(sessionId);
 
-        logger.info("Yeni captcha isteği alındı. SessionId: " + sessionId);
-
-        if (captchaSession != null && captchaSession.getChangeCaptchaCount() >= 4) {
+        if (captchaSession != null && captchaSession.getChangeCaptchaCount().get() >= 4) {
             if(captchaSession.getExpirationTime().isBefore(Instant.now())) {
                 captchaSessions.remove(sessionId);
                 captchaSession = captchaSessions.get(sessionId);
@@ -41,17 +50,16 @@ public class CaptchaService {
         } else {
             captchaSession.setCaptchaCode(captcha.getCode());
             captchaSession.setExpirationTime(Instant.now().plusSeconds(30));
-            captchaSession.setChangeCaptchaCount(captchaSession.getChangeCaptchaCount() + 1);
+            captchaSession.setChangeCaptchaCount(captchaSession.getChangeCaptchaCount().get() + 1);
         }
         captchaSessions.put(sessionId, captchaSession);
         return captcha;
     }
 
+
     public boolean validateCaptcha(HttpSession session, String code) {
         String sessionId = session.getId();
         CaptchaSession captchaSession = captchaSessions.get(sessionId);
-
-        logger.info("Captcha doğrulama isteği alındı. SessionId: " + sessionId + ", Kod: " + code);
 
         if (captchaSession == null || !captchaSession.getCaptchaCode().equals(code) || captchaSession.getExpirationTime().isBefore(Instant.now())) {
             return false;
@@ -64,7 +72,7 @@ public class CaptchaService {
         private String userId;
         private String captchaCode;
         private Instant expirationTime;
-        private int changeCaptchaCount;
+        private AtomicInteger changeCaptchaCount;
 
         public CaptchaSession() {
         }
@@ -73,7 +81,9 @@ public class CaptchaService {
             this.userId = userId;
             this.captchaCode = captchaCode;
             this.expirationTime = expirationTime;
-            this.changeCaptchaCount = changeCaptchaCount;
+            this.changeCaptchaCount = new AtomicInteger(changeCaptchaCount);
+            delayedDecreaseChangeCaptchaCount();
+            System.out.println(java.time.ZonedDateTime.now());
         }
 
         public String getUserId() {
@@ -100,13 +110,23 @@ public class CaptchaService {
             this.expirationTime = expirationTime;
         }
 
-        public int getChangeCaptchaCount() {
+        public AtomicInteger getChangeCaptchaCount() {
             return changeCaptchaCount;
         }
 
         public void setChangeCaptchaCount(int changeCaptchaCount) {
-            this.changeCaptchaCount = changeCaptchaCount;
+            this.changeCaptchaCount.set(changeCaptchaCount);
+            delayedDecreaseChangeCaptchaCount();
+        }
+
+        private void delayedDecreaseChangeCaptchaCount() {
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {if (changeCaptchaCount.get() >= 1) changeCaptchaCount.getAndDecrement();}
+                    },
+                    30000
+            );
         }
     }
-
 }
