@@ -1,3 +1,4 @@
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
@@ -85,19 +86,28 @@
 </head>
 <body>
 <div class="container">
-    <h1>Captcha Doğrulama</h1>
+    <h1><spring:message code="captchaVerification"/></h1>
     <img id="captchaImage" alt="Captcha Resmi">
     <div id="timer"></div>
-    <button id="refreshButton">Yenile</button>
+    <button id="refreshButton"><spring:message code="refreshButton"/></button>
     <form>
-        <label for="captchaCode">Captcha Kodunu Girin:</label>
+        <label for="captchaCode"><spring:message code="enterCaptchaCode"/></label>
         <input type="text" id="captchaCode" name="captchaCode" required>
-        <button id="submit" type="submit">Doğrula</button>
+        <button id="submit" type="submit"><spring:message code="verify"/></button>
     </form>
     <div id="result"></div>
+    <p> <spring:message code="languagePreference"/>
+        <a href="?lang=tr_TR"><spring:message code="turkish"/></a> |
+        <a href="?lang=en_US"><spring:message code="english"/></a>
+    </p>
 </div>
 
 <script>
+    var tooManyRequest = "<spring:message code="tooManyRequest"/>";
+    var verificationSuccessful = "<spring:message code="verificationSuccessful"/>"
+    var verificationFailed = "<spring:message code="verificationFailed"/>"
+    var imageLoadFailure =  "<spring:message code="imageLoadFailure"/>"
+
     const form = document.querySelector('form');
     const submitButton = document.getElementById('submit');
     const resultDiv = document.getElementById('result');
@@ -123,7 +133,7 @@
         })
             .then(response => response.json())
             .then(data => {
-                resultDiv.textContent = data ? 'Doğrulama başarılı!' : 'Doğrulama başarısız!'
+                resultDiv.textContent = data ? verificationSuccessful : verificationFailed
                 resultDiv.style.color = data ? 'green' : 'red';
             })
             .catch(error => {
@@ -141,7 +151,7 @@
                 if (response.status === 429) {
                     refreshButton.disabled = true
                     submitButton.disabled = true
-                    resultDiv.textContent = 'Çok fazla kez yenilendi! Lütfen 30 saniye bekleyiniz.';
+                    resultDiv.textContent = tooManyRequest;
                     resultDiv.style.color = 'red'
                 }
                 clearInterval(interval);

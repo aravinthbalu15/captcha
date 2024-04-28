@@ -26,6 +26,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
         dispatcherServlet.setInitParameter("throwExceptionIfNoHandlerFound", "true");
 
         CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
+
         characterEncodingFilter.setEncoding("UTF-8");
         characterEncodingFilter.setForceEncoding(true);
         characterEncodingFilter.setForceRequestEncoding(true);
