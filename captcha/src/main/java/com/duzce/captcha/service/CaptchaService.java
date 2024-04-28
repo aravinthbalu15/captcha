@@ -22,8 +22,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRED, readOnly = true,
-        rollbackFor = Exception.class)
+@Transactional(propagation = Propagation.REQUIRED, readOnly = true, rollbackFor = Exception.class)
 public class CaptchaService {
 
     private Map<String, CaptchaSession> captchaSessions = new HashMap<>();
@@ -56,12 +55,14 @@ public class CaptchaService {
         return captcha;
     }
 
-
     public boolean validateCaptcha(HttpSession session, String code) {
         String sessionId = session.getId();
         CaptchaSession captchaSession = captchaSessions.get(sessionId);
-
-        if (captchaSession == null || !captchaSession.getCaptchaCode().equals(code) || captchaSession.getExpirationTime().isBefore(Instant.now())) {
+        if (
+                captchaSession == null ||
+                !captchaSession.getCaptchaCode().equals(code) ||
+                captchaSession.getExpirationTime().isBefore(Instant.now())
+        ) {
             return false;
         }
         captchaSessions.remove(sessionId);
@@ -69,9 +70,13 @@ public class CaptchaService {
     }
 
     public class CaptchaSession {
+
         private String userId;
+
         private String captchaCode;
+
         private Instant expirationTime;
+
         private AtomicInteger changeCaptchaCount;
 
         public CaptchaSession() {
@@ -83,7 +88,6 @@ public class CaptchaService {
             this.expirationTime = expirationTime;
             this.changeCaptchaCount = new AtomicInteger(changeCaptchaCount);
             delayedDecreaseChangeCaptchaCount();
-            System.out.println(java.time.ZonedDateTime.now());
         }
 
         public String getUserId() {
@@ -128,5 +132,7 @@ public class CaptchaService {
                     30000
             );
         }
+
     }
+
 }

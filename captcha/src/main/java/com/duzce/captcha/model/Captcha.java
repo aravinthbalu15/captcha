@@ -26,12 +26,7 @@ public class Captcha {
     @Column(name = "image", nullable = false)
     private byte[] image;
 
-
-    // Default constructor
-    public Captcha() {
-    }
-
-    // Getters and setters
+    public Captcha() {}
 
     public Long getId() {
         return id;

@@ -27,6 +27,7 @@ public class AppConfig {
 
     @Autowired
     private Environment env;
+
     @Bean
     public LocalSessionFactoryBean getSessionFactory() {
         LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
@@ -61,4 +62,5 @@ public class AppConfig {
         transactionManager.setSessionFactory(getSessionFactory().getObject());
         return transactionManager;
     }
+
 }

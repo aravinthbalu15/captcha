@@ -1,5 +1,6 @@
 package com.duzce.captcha.controller;
 
+import com.duzce.captcha.exception.ResourceNotFoundException;
 import com.duzce.captcha.model.Captcha;
 import com.duzce.captcha.service.CaptchaService;
 import jakarta.servlet.http.HttpSession;
@@ -28,6 +29,7 @@ public class CaptchaController {
         headers.setContentType(MediaType.IMAGE_JPEG);
         return new ResponseEntity<>(captcha.getImage(), headers, HttpStatus.OK);
     }
+
     @PostMapping("/validate")
     public ResponseEntity<Boolean> validateCaptcha(HttpSession session, @RequestBody String code) {
         if (code.length() != 6 && code.chars().noneMatch(Character::isLowerCase)) {
@@ -40,8 +42,10 @@ public class CaptchaController {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(isValid);
     }
+
     @GetMapping()
     public String showCaptchaPage() {
         return "captcha";
     }
+
 }

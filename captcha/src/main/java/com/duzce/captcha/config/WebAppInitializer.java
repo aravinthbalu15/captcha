@@ -13,6 +13,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 public class WebAppInitializer implements WebApplicationInitializer {
+
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         AnnotationConfigWebApplicationContext context = getContext();
@@ -22,6 +23,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
 
         dispatcherServlet.setLoadOnStartup(1);
         dispatcherServlet.addMapping("/");
+        dispatcherServlet.setInitParameter("throwExceptionIfNoHandlerFound", "true");
 
         CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
         characterEncodingFilter.setEncoding("UTF-8");
@@ -37,4 +39,5 @@ public class WebAppInitializer implements WebApplicationInitializer {
         context.setConfigLocation("com.duzce.captcha.config");
         return context;
     }
+
 }

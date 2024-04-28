@@ -24,15 +24,16 @@ public class CaptchaRepository {
     private Session getSession() {
         return sessionFactory.getCurrentSession();
     }
+
     public Captcha findRandomCaptcha() {
         Session session = sessionFactory.openSession();
         try {
             String query = "SELECT c FROM Captcha c ORDER BY FUNCTION('RANDOM') LIMIT 1";
             Captcha result = session.createQuery(query, Captcha.class).getSingleResult();
-            System.out.println(result.getCode());
             return result;
         } finally {
             session.close();
         }
     }
+
 }
