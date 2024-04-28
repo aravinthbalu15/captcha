@@ -5,7 +5,10 @@ import jakarta.persistence.Table;
 import org.hibernate.annotations.*;
 import org.hibernate.type.descriptor.jdbc.TimestampJdbcType;
 
-import java.security.Timestamp;
+import java.math.BigInteger;
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.sql.Types;
 
 import static org.postgresql.core.Oid.TIMESTAMP;
@@ -25,6 +28,10 @@ public class Captcha {
     @JdbcTypeCode(Types.BINARY)
     @Column(name = "image", nullable = false)
     private byte[] image;
+
+    @Column(name = "created_at", nullable = false)
+    @CreationTimestamp
+    private Timestamp createdAt;
 
     public Captcha() {}
 
@@ -50,6 +57,14 @@ public class Captcha {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 
 }
