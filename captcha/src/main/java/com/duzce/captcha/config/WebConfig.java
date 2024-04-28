@@ -1,6 +1,7 @@
 package com.duzce.captcha.config;
 
 import com.duzce.captcha.interceptor.RequestInterceptor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -47,6 +49,7 @@ public class WebConfig implements WebMvcConfigurer {
         stringMediaTypeList.add(MediaType.TEXT_PLAIN);
         stringMediaTypeList.add(MediaType.TEXT_HTML);
         stringMediaTypeList.add(MediaType.APPLICATION_JSON);
+        stringMediaTypeList.add(MediaType.ALL);
         stringMediaTypeList.add(new MediaType("text", "javascript", Charset.forName("UTF-8")));
         stringConverter.setSupportedMediaTypes(stringMediaTypeList);
         converters.add(stringConverter);
@@ -58,6 +61,9 @@ public class WebConfig implements WebMvcConfigurer {
         byteArrayMediaTypeList.add(MediaType.APPLICATION_OCTET_STREAM);
         arrayHttpMessageConverter.setSupportedMediaTypes(byteArrayMediaTypeList);
         converters.add(arrayHttpMessageConverter);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
     }
 
     @Override

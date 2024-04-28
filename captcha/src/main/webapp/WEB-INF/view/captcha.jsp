@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Captcha Doğrulama</title>
+    <title><spring:message code="captchaVerification"/></title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -127,14 +127,14 @@
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        fetch('${pageContext.request.contextPath}/captcha_war/captcha/validate', {
+        fetch('${pageContext.request.contextPath}/captcha/validate', {
                 method: 'POST',
                 body: captchaCodeInput.value
         })
             .then(response => response.json())
             .then(data => {
-                resultDiv.textContent = data ? verificationSuccessful : verificationFailed
-                resultDiv.style.color = data ? 'green' : 'red';
+                resultDiv.textContent = data.result ? verificationSuccessful : verificationFailed
+                resultDiv.style.color = data.result ? 'green' : 'red';
             })
             .catch(error => {
                 console.log(error)
@@ -180,7 +180,7 @@
                 captchaImage.src = URL.createObjectURL(blob);
             })
             .catch(error => {
-                console.error("Resim alınamadı: ", error);
+                console.error(imageLoadFailure, error);
             });
     }
 

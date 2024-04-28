@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Controller
 @RequestMapping("/captcha")
 public class CaptchaController {
@@ -30,17 +33,18 @@ public class CaptchaController {
         return new ResponseEntity<>(captcha.getImage(), headers, HttpStatus.OK);
     }
 
-    @PostMapping("/validate")
-    public ResponseEntity<Boolean> validateCaptcha(HttpSession session, @RequestBody String code) {
+    @PostMapping(value = "/validate", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, Boolean>> validateCaptcha(HttpSession session, @RequestBody String code) {
         if (code.length() != 6 && code.chars().noneMatch(Character::isLowerCase)) {
-            return ResponseEntity.badRequest().build();
+            Map<String, Boolean> response = new HashMap<>();
+            response.put("result", false);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-
         boolean isValid = captchaService.validateCaptcha(session, code);
-        if (isValid) {
-            return ResponseEntity.ok(isValid);
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(isValid);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("result", isValid);
+
+        return new ResponseEntity<>(response, isValid ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping()
