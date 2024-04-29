@@ -51,6 +51,7 @@ public class WebConfig implements WebMvcConfigurer {
         stringMediaTypeList.add(MediaType.APPLICATION_JSON);
         stringMediaTypeList.add(MediaType.ALL);
         stringMediaTypeList.add(new MediaType("text", "javascript", Charset.forName("UTF-8")));
+
         stringConverter.setSupportedMediaTypes(stringMediaTypeList);
         converters.add(stringConverter);
 
