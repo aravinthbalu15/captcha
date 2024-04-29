@@ -129,7 +129,10 @@
 
         fetch('${pageContext.request.contextPath}/captcha/validate', {
                 method: 'POST',
-                body: captchaCodeInput.value
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({code: captchaCodeInput.value})
         })
             .then(response => response.json())
             .then(data => {
