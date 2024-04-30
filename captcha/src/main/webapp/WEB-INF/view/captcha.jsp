@@ -148,6 +148,7 @@
     var interval
 
     function GetCaptchaImage() {
+        resultDiv.textContent = ''
         captchaCodeInput.value = ''
         fetch('${pageContext.request.contextPath}/captcha/image?')
             .then(response => {

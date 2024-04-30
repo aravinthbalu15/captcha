@@ -85,7 +85,18 @@ public class CaptchaService {
             captcha.setCode(code);
             captcha.setImage(CaptchaGenerator.generateImage(captcha.getCode()));
             captchaRepository.insertCaptcha(captcha);
+    }
 
+    @Transactional(readOnly = false)
+    public Captcha getCaptchaById(int id) {
+        Captcha captcha = captchaRepository.getCaptchaById(id);
+        return captcha;
+    }
+
+
+    public int getCaptchaCount() {
+        captchaRepository.getRowCount();
+        return captchaRepository.getRowCount();
     }
 
     public static class CaptchaGenerator {
