@@ -2,8 +2,6 @@ package com.duzce.captcha.service;
 
 import com.duzce.captcha.dao.CaptchaRepository;
 import com.duzce.captcha.model.Captcha;
-import com.google.code.kaptcha.impl.DefaultKaptcha;
-import com.google.code.kaptcha.util.Config;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +19,7 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.mchange.v2.ser.SerializableUtils.toByteArray;
+
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED, readOnly = true, rollbackFor = Exception.class)
@@ -92,7 +90,6 @@ public class CaptchaService {
         Captcha captcha = captchaRepository.getCaptchaById(id);
         return captcha;
     }
-
 
     public int getCaptchaCount() {
         captchaRepository.getRowCount();
@@ -207,8 +204,7 @@ public class CaptchaService {
 
         private AtomicInteger changeCaptchaCount;
 
-        public CaptchaSession() {
-        }
+        public CaptchaSession() {}
 
         public CaptchaSession(String userId, String captchaCode, Instant expirationTime, int changeCaptchaCount) {
             this.userId = userId;
