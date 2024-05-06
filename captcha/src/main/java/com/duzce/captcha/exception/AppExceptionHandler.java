@@ -10,6 +10,16 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 @ControllerAdvice
 public class AppExceptionHandler {
 
+    @ExceptionHandler(value = {NoHandlerFoundException.class, ResourceNotFoundException.class})
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public String handlerNotFound(HttpServletRequest request, Exception e) {
+        System.err.println(request.getRequestURL() + " istegine karsilik karsilayici bulunamadi. Hata mesaji: "
+                + e.getMessage());
+        e.printStackTrace();
+        return "404";
+    }
+
+
     @ExceptionHandler(value = RuntimeException.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleInternalServerError(HttpServletRequest request, Exception e) {
@@ -19,12 +29,4 @@ public class AppExceptionHandler {
         return "error";
     }
 
-    @ExceptionHandler(value = NoHandlerFoundException.class)
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public String handleNotFound(HttpServletRequest request, Exception e) {
-        System.err.println(request.getRequestURL() + " istegine karsilik karsilayici bulunamadi. Hata mesaji: "
-                + e.getMessage());
-        e.printStackTrace();
-        return "404";
-    }
 }

@@ -30,7 +30,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/captcha")
-    public void deleteCaptcha(@RequestParam(name = "id") int id, HttpServletResponse response) {
+    public void deleteCaptcha(@RequestParam(name = "id") int id) {
         captchaService.deleteCaptcha(id);
     }
 
@@ -44,7 +44,7 @@ public class AdminController {
         response.setStatus(HttpStatus.OK.value());
     }
 
-    @GetMapping("/captcha")
+    @GetMapping(value = "/captcha", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody String getCaptchas(
             @RequestParam(name = "first") int first,
             @RequestParam(name = "size") int size
@@ -63,7 +63,7 @@ public class AdminController {
         return new ResponseEntity<>(captcha.getImage(), headers, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/captcha/count")
+    @GetMapping(value = "/captcha/count", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody String getCaptchaCount() {
         captchaService.getCaptchaCount();
         JSONObject jsonObject = new JSONObject();

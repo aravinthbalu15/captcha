@@ -1,5 +1,6 @@
 package com.duzce.captcha.dao;
 
+import com.duzce.captcha.exception.ResourceNotFoundException;
 import com.duzce.captcha.model.Captcha;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.*;
@@ -17,6 +18,7 @@ public class CaptchaRepository {
 
     @Autowired
     private SessionFactory sessionFactory;
+
     private Session getSession() {
         return sessionFactory.getCurrentSession();
     }
@@ -28,6 +30,7 @@ public class CaptchaRepository {
             captcha = getSession().createQuery(query, Captcha.class).getSingleResult();
         } catch (Exception e) {
             e.printStackTrace();
+            throw new ResourceNotFoundException();
         }
         return captcha;
     }
@@ -50,6 +53,7 @@ public class CaptchaRepository {
             captchas = query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
+            throw new ResourceNotFoundException();
         }
         return captchas;
     }
@@ -60,9 +64,11 @@ public class CaptchaRepository {
             CriteriaQuery<Captcha> criteriaQuery = criteriaBuilder.createQuery(Captcha.class);
             Root<Captcha> root = criteriaQuery.from(Captcha.class);
             criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("id"), id));
-            return getSession().createQuery(criteriaQuery).getSingleResult();
+            Captcha captcha = getSession().createQuery(criteriaQuery).getSingleResult();
+            return captcha;
         } catch (NoResultException e) {
-            return null;
+            e.printStackTrace();
+            throw new ResourceNotFoundException();
         }
     }
 
@@ -75,6 +81,7 @@ public class CaptchaRepository {
             getSession().createQuery(criteriaDelete).executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
+            throw new ResourceNotFoundException();
         }
     }
 
@@ -88,6 +95,7 @@ public class CaptchaRepository {
             rowCount =  getSession().createQuery(countQuery).getSingleResult().intValue();
         } catch (Exception e) {
             e.printStackTrace();
+            throw new ResourceNotFoundException();
         }
         return rowCount;
     }
@@ -97,6 +105,7 @@ public class CaptchaRepository {
             getSession().save(captcha);
         } catch (Exception e) {
             e.printStackTrace();
+            throw new ResourceNotFoundException();
         }
     }
 

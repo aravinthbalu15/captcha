@@ -39,13 +39,12 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         WebMvcConfigurer.super.configureMessageConverters(converters);
+
         StringHttpMessageConverter stringConverter = new StringHttpMessageConverter();
         List<MediaType> stringMediaTypeList = new ArrayList<>();
         stringMediaTypeList.add(MediaType.TEXT_PLAIN);
         stringMediaTypeList.add(MediaType.TEXT_HTML);
         stringMediaTypeList.add(MediaType.APPLICATION_JSON);
-        stringMediaTypeList.add(MediaType.ALL);
-        stringMediaTypeList.add(new MediaType("text", "javascript", Charset.forName("UTF-8")));
 
         stringConverter.setSupportedMediaTypes(stringMediaTypeList);
         converters.add(stringConverter);
@@ -54,7 +53,7 @@ public class WebConfig implements WebMvcConfigurer {
         List<MediaType> byteArrayMediaTypeList = new ArrayList<MediaType>();
         byteArrayMediaTypeList.add(MediaType.IMAGE_JPEG);
         byteArrayMediaTypeList.add(MediaType.IMAGE_PNG);
-        byteArrayMediaTypeList.add(MediaType.APPLICATION_OCTET_STREAM);
+
         arrayHttpMessageConverter.setSupportedMediaTypes(byteArrayMediaTypeList);
         converters.add(arrayHttpMessageConverter);
     }
@@ -74,8 +73,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Bean(name = "messageSource")
     public ReloadableResourceBundleMessageSource getMessageSource() {
-        ReloadableResourceBundleMessageSource messageSource =
-                new ReloadableResourceBundleMessageSource();
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:messages");
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setFallbackToSystemLocale(true);
