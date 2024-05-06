@@ -3,6 +3,8 @@ package com.duzce.captcha.controller;
 import com.duzce.captcha.model.Captcha;
 import com.duzce.captcha.service.CaptchaService;
 import jakarta.servlet.http.HttpServletResponse;
+import net.sf.json.JSONObject;
+import netscape.javascript.JSObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,7 +24,7 @@ public class AdminController {
     @Autowired
     private CaptchaService captchaService;
 
-    @GetMapping()
+    @GetMapping(produces = MediaType.TEXT_HTML_VALUE)
     public String adminPage() {
         return "admin";
     }
@@ -46,14 +48,14 @@ public class AdminController {
     }
 
     @GetMapping("/captcha")
-    public ResponseEntity<Map<String, List<Captcha>>> getCaptchas(
+    public @ResponseBody String getCaptchas(
             @RequestParam(name = "first") int first,
             @RequestParam(name = "size") int size
     ) {
+        JSONObject jsonObject = new JSONObject();
         List<Captcha> captchas = captchaService.getCaptchas(first, size);
-        Map<String, List<Captcha>> response = new HashMap<>();
-        response.put("captchas", captchas);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        jsonObject.put("captchas", captchas);
+        return jsonObject.toString();
     }
 
     @GetMapping(value = "/captcha/image", produces = MediaType.IMAGE_JPEG_VALUE)
@@ -65,11 +67,11 @@ public class AdminController {
     }
 
     @GetMapping(value = "/captcha/count")
-    public ResponseEntity<Map<String, Integer>> getCaptchaCount() {
+    public @ResponseBody String getCaptchaCount() {
         captchaService.getCaptchaCount();
-        Map<String, Integer> response = new HashMap<>();
-        response.put("result", captchaService.getCaptchaCount());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("result", captchaService.getCaptchaCount());
+        return jsonObject.toString();
     }
 
 }

@@ -127,12 +127,8 @@
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        fetch('${pageContext.request.contextPath}/captcha/validate', {
+        fetch('${pageContext.request.contextPath}/captcha/validate?code='+captchaCodeInput.value, {
                 method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({code: captchaCodeInput.value})
         })
             .then(response => response.json())
             .then(data => {

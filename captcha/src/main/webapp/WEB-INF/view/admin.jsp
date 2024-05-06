@@ -154,7 +154,7 @@
             row.appendChild(imageCell);
 
             const createdAtCell = document.createElement("td");
-            createdAtCell.textContent = new Date(captcha.createdAt).toLocaleString();
+            createdAtCell.textContent = captcha.createdAt;
             row.appendChild(createdAtCell);
 
             const actionCell = document.createElement("td");

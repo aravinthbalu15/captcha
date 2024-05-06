@@ -1,22 +1,18 @@
 package com.duzce.captcha.config;
 
 import com.duzce.captcha.interceptor.RequestInterceptor;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -31,7 +27,6 @@ import java.util.Locale;
 @EnableWebMvc
 @ComponentScan(basePackages = "com.duzce.captcha")
 public class WebConfig implements WebMvcConfigurer {
-
     @Bean
     public InternalResourceViewResolver jspViewResolver() { InternalResourceViewResolver viewResolver = new
             InternalResourceViewResolver(); viewResolver.setViewClass(JstlView.class);
@@ -62,9 +57,6 @@ public class WebConfig implements WebMvcConfigurer {
         byteArrayMediaTypeList.add(MediaType.APPLICATION_OCTET_STREAM);
         arrayHttpMessageConverter.setSupportedMediaTypes(byteArrayMediaTypeList);
         converters.add(arrayHttpMessageConverter);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
     }
 
     @Override
