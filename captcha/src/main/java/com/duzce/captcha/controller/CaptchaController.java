@@ -3,6 +3,7 @@ package com.duzce.captcha.controller;
 import com.duzce.captcha.model.Captcha;
 import com.duzce.captcha.service.CaptchaService;
 import jakarta.servlet.http.HttpSession;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -11,9 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Controller
 @RequestMapping("/captcha")
 public class CaptchaController {
@@ -21,7 +19,7 @@ public class CaptchaController {
     @Autowired
     private CaptchaService captchaService;
 
-    @GetMapping()
+    @GetMapping(produces = MediaType.TEXT_HTML_VALUE)
     public String showCaptchaPage() {
         return "captcha";
     }
@@ -38,24 +36,15 @@ public class CaptchaController {
     }
 
     @PostMapping(value = "/validate", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, Boolean>> validateCaptcha(HttpSession session, @RequestBody Map<String, String> reqBody) {
-        String code;
-        try {
-            code = reqBody.get("code");
-        } catch (NullPointerException e) {
-            Map<String, Boolean> response = new HashMap<>();
-            response.put("result", false);
-            return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
-        }
+    public  ResponseEntity<String> validateCaptcha(HttpSession session, @RequestParam(name = "code") String code) {
+        JSONObject jsonResObject = new JSONObject();
         if (code.length() != 6 && code.chars().noneMatch(Character::isLowerCase)) {
-            Map<String, Boolean> response = new HashMap<>();
-            response.put("result", false);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            jsonResObject.put("result", false);
+            return new ResponseEntity<>(jsonResObject.toString(), HttpStatus.BAD_REQUEST);
         }
         boolean isValid = captchaService.validateCaptcha(session, code);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("result", isValid);
-        return new ResponseEntity<>(response, isValid ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+        jsonResObject.put("result", isValid);
+        return new ResponseEntity<>(jsonResObject.toString(), isValid ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
 }

@@ -3,6 +3,7 @@ package com.duzce.captcha.dao;
 import com.duzce.captcha.model.Captcha;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.*;
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -16,7 +17,6 @@ public class CaptchaRepository {
 
     @Autowired
     private SessionFactory sessionFactory;
-
     private Session getSession() {
         return sessionFactory.getCurrentSession();
     }

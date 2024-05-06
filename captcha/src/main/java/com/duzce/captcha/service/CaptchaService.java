@@ -69,7 +69,13 @@ public class CaptchaService {
     }
 
     public List<Captcha> getCaptchas(int setFirstResult, int setMaxResults) {
-        return captchaRepository.getCaptchas(setFirstResult, setMaxResults);
+        List<Captcha> captchas = captchaRepository.getCaptchas(setFirstResult, setMaxResults);
+        if (captchas != null) {
+            for (Captcha captcha : captchas) {
+                captcha.setImage(null);
+            }
+        }
+        return captchas;
     }
 
     @Transactional(readOnly = false)

@@ -154,7 +154,7 @@
             row.appendChild(imageCell);
 
             const createdAtCell = document.createElement("td");
-            createdAtCell.textContent = new Date(captcha.createdAt).toLocaleString();
+            createdAtCell.textContent = new Date(captcha.createdAt.nanos).toLocaleString();
             row.appendChild(createdAtCell);
 
             const actionCell = document.createElement("td");
@@ -230,12 +230,8 @@
         const formData = new FormData(addCaptchaForm);
         const code = formData.get("code");
 
-        fetch("${pageContext.request.contextPath}/admin/captcha", {
+        fetch("${pageContext.request.contextPath}/admin/captcha?code="+code, {
             method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ code })
         })
             .then(response => {
                 if (response.ok) {

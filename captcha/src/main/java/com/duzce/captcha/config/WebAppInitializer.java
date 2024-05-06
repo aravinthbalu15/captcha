@@ -1,5 +1,7 @@
 package com.duzce.captcha.config;
 
+import com.duzce.captcha.filter.LoggingFilter;
+import jakarta.servlet.FilterRegistration;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRegistration;
@@ -18,21 +20,23 @@ public class WebAppInitializer implements WebApplicationInitializer {
     public void onStartup(ServletContext servletContext) throws ServletException {
         AnnotationConfigWebApplicationContext context = getContext();
         servletContext.addListener(new ContextLoaderListener(context));
-        ServletRegistration.Dynamic dispatcherServlet =
-                servletContext.addServlet("   ",new DispatcherServlet(context));
 
+        ServletRegistration.Dynamic dispatcherServlet = servletContext.addServlet("   ",
+                new DispatcherServlet(context));
         dispatcherServlet.setLoadOnStartup(1);
         dispatcherServlet.addMapping("/");
         dispatcherServlet.setInitParameter("throwExceptionIfNoHandlerFound", "true");
 
         CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
-
         characterEncodingFilter.setEncoding("UTF-8");
         characterEncodingFilter.setForceEncoding(true);
         characterEncodingFilter.setForceRequestEncoding(true);
         characterEncodingFilter.setForceResponseEncoding(true);
         servletContext.addFilter("characterEncodingFilter", characterEncodingFilter)
                 .addMappingForUrlPatterns(null, false, "/*");
+
+        FilterRegistration.Dynamic filterRegistration = servletContext.addFilter("loggingFilter", new LoggingFilter());
+        filterRegistration.addMappingForUrlPatterns(null, false, "/*");
     }
 
     private AnnotationConfigWebApplicationContext getContext() {
