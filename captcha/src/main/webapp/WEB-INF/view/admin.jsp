@@ -229,13 +229,9 @@
         event.preventDefault();
         const formData = new FormData(addCaptchaForm);
         const code = formData.get("code");
-
-        fetch("${pageContext.request.contextPath}/admin/captcha", {
+        const url = "${pageContext.request.contextPath}/admin/captcha?code="+code;
+        fetch(url, {
             method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ code })
         })
             .then(response => {
                 if (response.ok) {
